@@ -1,0 +1,49 @@
+ <!--=====左侧=====-->
+    <div id="left" class='fleft'>
+        <ul class='left_nav'>
+            <li><a href="<?php echo site_url('User/index');?>"><i class='icon icon-home'></i>&nbsp;&nbsp;首页</a></li>
+            <li><a href="<?php echo site_url('Operate/atme') ?>"><i class='icon icon-at'></i>&nbsp;&nbsp;提到我的</a></li>
+            <li><a href="<?php echo site_url('Operate/comment');?>"><i class='icon icon-comment'></i>&nbsp;&nbsp;评论</a></li>
+            <li><a href="<?php echo site_url('Operate/letter');?>"><i class='icon icon-letter'></i>&nbsp;&nbsp;私信</a></li>
+            <li><a href="<?php echo site_url('Operate/keep') ?>"><i class='icon icon-keep'></i>&nbsp;&nbsp;收藏</a></li>
+        </ul>
+        <?php 
+        
+			$this->db->where('uid',$this->session->userid);
+			$group = $this->db->from('group')->get()->result_array();
+
+        ?>
+        <div class="group">
+            <fieldset><legend>分组</legend></fieldset>
+            <ul>
+              
+                <li><a href=""><i class='icon icon-group'></i>&nbsp;&nbsp;全部</a></li>
+                <?php foreach($group as $v):?>
+                    <li>
+                        <a href=""><i class='icon icon-group'></i>&nbsp;&nbsp;<?php echo $v['name']?></a>
+                    </li>
+               <?php endforeach; ?>
+            </ul>
+            <span id='create_group'>创建新分组</span>
+        </div>
+    </div>
+    
+    <!--==========创建分组==========-->
+    <script type='text/javascript'>
+        var addGroup = "<?php echo site_url('Group/add'); ?>";
+    </script>
+    <div id='add-group'>
+        <div class="group_head">
+            <span class='group_text fleft'>创建好友分组</span>
+        </div>
+        <div class='group-name'>
+            <span>分组名称：</span>
+            <input type="text" name='name' id='gp-name' style="line-height: inherit;">
+        </div>
+        <div class='gp-btn-wrap'>
+            <span class='add-group-sub'>添加</span>
+            <span class='group-cencle'>取消</span>
+        </div>
+    </div>
+    <!--==========创建分组==========-->
+   

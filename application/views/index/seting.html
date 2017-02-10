@@ -1,0 +1,385 @@
+
+	<title>修改个人资料</title>
+	<link rel="stylesheet" href="/Blog/Public/bootstrap/css/bootstrap.css" />
+	<link rel="stylesheet" href="/Blog/Public/bootstrapvalidator/dist/css/bootstrapValidator.css" />
+	<link rel="stylesheet" href="/Blog/Public/Css/nav.css" />
+	<link rel="stylesheet" href="/Blog/Public/Css/edit.css" />
+	<link rel="stylesheet" href="/Blog/Public/Css/index.css" />
+    <link rel="stylesheet" href="/Blog/Public/Css/bottom.css" /> 
+
+    <script type='text/javascript' src='/Blog/Public/Js/jquery.min.js'></script>
+	<script type='text/javascript' src="/Blog/Public/Js/nav.js"></script> 
+	<script type='text/javascript' src='/Blog/Public/Js/edit.js'></script>
+	<script type='text/javascript' src='/Blog/Public/Js/city.js'></script>
+	<script src="/Blog/Public/bootstrap/js/bootstrap.js"></script>
+	<script src="/Blog/Public/bootstrapvalidator/dist/js/bootstrapValidator.js"></script>
+
+
+	<style type="text/css">
+	
+	.form p label {
+    display: inline-block;
+    width: 140px;
+    text-align: right;
+    padding: 0 20px;
+}
+.has-feedback label ~ .form-control-feedback {
+     top: 0; 
+}
+.form-control-feedback {
+    position: relative;
+    top: 0;
+    right: 0;
+    z-index: 0;
+    display: inline;
+    width: 0;
+    height: 0;
+    line-height: 0;
+}
+.help-block {
+   display: inline;
+    /* margin-top: 5px; */
+    margin-bottom: 10px;
+    color: #737373;
+}
+   
+
+	</style>
+<!--==========顶部固定导行条==========-->
+	<script>
+	var address = "<?php echo $user[0]['location'] ;?>";
+	</script>
+<!--==========内容主体==========-->
+	<div style='height:60px;opcity:10'></div>
+    <div class="main">
+    <?php $this->load->view('index/left.html');?>
+    <!--=====右侧=====-->
+    	<div id='right'>
+    		<ul id='sel-edit'>
+    			<li class='edit-cur'>基本信息</li>
+    			<li>修改头像</li>
+    			<li>修改密码</li>
+    		</ul>
+    		<div class='form'>
+    			<form action="<?php echo site_url('UserSeting/edit_user');?>" method='post' id="defaultForm">
+    			
+    				<p class="form-group input-group-sm">
+    					<label for="nickname"><span class='red'>*</span>昵称：</label>
+    					<input class='input form-control' style="display:inline;width:200px"type="text" name='nickname' value="<?php echo $user[0]['nickname'];?>"  />
+    				</p>
+    				<p class="form-group input-group-sm">
+    					<label for="truename">真实名称：</label>
+    					<input class='input form-control' style="display:inline;width:200px"type="text" name='truename' value="<?php echo $user[0]['truename'];?>"  />
+    				</p>
+    				<p >
+    					<label for=""><span class='red'></span>性别：</label>
+    					<input type="radio" name='sex' value='男' <?php if(!$user[0]['sex']||$user[0]['sex']=='男') echo 'checked="checked"'; ?> />&nbsp;男&nbsp;&nbsp;&nbsp;&nbsp;
+    					<input type="radio" name='sex' value='女' <?php if($user[0]['sex']=='女') echo 'checked="checked"';  ?> />&nbsp;女
+    				</p>
+    				<p>
+    					<label for=""><span class='red'></span>所在地：</label>
+    					<select name="province" id="">
+    						<option value="">请选择</option>
+    					</select>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <select name="city">
+                            <option value="">请选择</option>
+                        </select>
+    				</p>
+    				<p>
+    					<label for="">星座：</label>
+    					<select name="night" id="">
+    						<option value="">请选择</option>
+    						<option value="白羊座"<?php if($user[0]['constellation']=='白羊座') echo 'selected="selected"';  ?>>白羊座</option>
+    						<option value="金牛座"<?php if($user[0]['constellation']=='金牛座') echo 'selected="selected"';  ?>>金牛座</option>
+    						<option value="双子座"<?php if($user[0]['constellation']=='双子座') echo 'selected="selected"';  ?>>双子座</option>
+    						<option value="巨蟹座"<?php if($user[0]['constellation']=='巨蟹座') echo 'selected="selected"';  ?>>巨蟹座</option>
+    						<option value="狮子座"<?php if($user[0]['constellation']=='狮子座') echo 'selected="selected"';  ?>>狮子座</option>
+    						<option value="处女座"<?php if($user[0]['constellation']=='处女座') echo 'selected="selected"';  ?>>处女座</option>
+    						<option value="天秤座"<?php if($user[0]['constellation']=='天秤座') echo 'selected="selected"';  ?>>天秤座</option>
+    						<option value="天蝎座"<?php if($user[0]['constellation']=='天蝎座') echo 'selected="selected"';  ?>>天蝎座</option>
+    						<option value="射手座"<?php if($user[0]['constellation']=='射手座') echo 'selected="selected"';  ?>>射手座</option>
+    						<option value="魔羯座"<?php if($user[0]['constellation']=='魔羯座') echo 'selected="selected"';  ?>>魔羯座</option>
+    						<option value="水瓶座"<?php if($user[0]['constellation']=='水瓶座') echo 'selected="selected"';  ?>>水瓶座</option>
+    						<option value="双鱼座"<?php if($user[0]['constellation']=='双鱼座') echo 'selected="selected"';  ?>>双鱼座</option>
+    					</select>
+    				</p>
+    				<p>
+    					<label for="" class='intro'>一句话介绍自己：</label>
+    					<textarea name="intro"><?php echo $user[0]['intro'] ;?></textarea>
+    				</p>
+    				<p>
+    					<input type="submit" value='保存修改' class='edit-sub'/>
+    				</p>
+    			</form>
+    		</div>
+    		<!--基本信息javascript  -->
+    		<script>
+    		$(function(){
+    			$('#defaultForm').bootstrapValidator({
+    	            message: 'This value is not valid',
+    	           
+    	            feedbackIcons: {
+    	                valid: 'glyphicon glyphicon-ok',
+    	                invalid: 'glyphicon glyphicon-remove',
+    	                validating: 'glyphicon glyphicon-refresh'
+    	            },
+    	            fields: {
+    	            	nickname: {
+    	                    message: 'The username is not valid',
+    	                    validators: {
+    	                        notEmpty: {
+    	                            message: '不能为空'
+    	                        },
+    	                        stringLength: {
+    	                            min: 6,
+    	                            max: 30,
+    	                            message: '6-30个字符'
+    	                        },
+    	                         remote: {
+    	                            type: 'POST',
+    	                            url: '<?php echo site_url("Blog/yanzheng"); ?>',
+    	                            message: '昵称已存在',
+    	                            delay: 1000
+    	                        }, 
+    	                        regexp: {
+    	                            regexp: /^[a-zA-Z0-9_\.]+$/,
+    	                            message: '由字母、数字及下划线组成'
+    	                        }
+    	                    }
+    	                
+    	                }
+          
+    	           }
+    	            
+    	        }).on('success.form.bv', function(e) {
+    	            e.preventDefault();
+
+    	            // Get the form instance
+    	            var $form = $(e.target);
+
+    	            // Get the BootstrapValidator instance
+    	            var bv = $form.data('bootstrapValidator');
+
+    	            // Use Ajax to submit form data
+    	            $.post($form.attr('action'), $form.serialize(), function(result) {
+    	                	alert('修改成功');
+    	                	window.location.href = "";
+    	             
+    	            }, 'json');
+    	        });
+    			
+    			
+    		})
+    		
+    		</script>
+    		<div class='form hidden'>
+    			<form action="<?php echo site_url('UserSeting/uploadFace');?>" target="ifrema" id="imgForm" method='post' enctype="multipart/form-data">
+	    			<div class='edit-face'>
+	    				<img id="upload" src="<?php if($user[0]['face80']) echo $user[0]['face80'];?>"/>
+                       
+	    				<p>
+	    					<input type="file" name='face' multiple="multiple" onchange="imgUpload(this);"/>
+	    				</p>
+	    					<span id="errMsg" style="color:red"></span>
+	    				</div>
+	    		</form>
+	    		<iframe style="display:none" name="ifrema"></iframe>
+	    			<form action="<?php echo site_url('UserSeting/faceImg');?>" method='post'>
+	    				<p>
+                            <input type="hidden" name='face180' value=''/>
+                            <input type="hidden" name='face80' value=''/>
+                            <input type="hidden" name='face50' value=''/>
+	    					<input type="button" value='保存修改' class='edit-sub' id="imgsubmit"/>
+	    				</p>
+	    		
+    				</form>
+    		</div>
+    		<!--   修改头像  -->
+    		<script type="text/javascript">
+    		$(function(){
+    			$("#imgsubmit").click(function(){ 
+    				var face180 = $("input[name=face180]").val();
+    				var face80 = $("input[name=face80]").val();
+    				var face50 = $("input[name=face50]").val();
+    				var errmsg = $("#errMsg").html();
+    				//console.log();
+    				if($.trim(errmsg).length==0&&face180){
+    					$.post("<?php echo site_url('UserSeting/faceImg');?>",{'face180':face180,'face80':face80,'face50':face50},function(data){
+    						
+    						if(data){
+    							$("#errMsg").html('上传头像成功');
+    							$("#errMsg").css('color','#0f0');
+    						}else{
+    							$("#errMsg").html('上传头像失败');
+    							$("#errMsg").css('color','#f00');
+    						}
+    						setTimeout(function(){
+    							$("#errMsg").html('');
+    							$("#errMsg").css('color','#f00');
+    						},2000)
+    						
+    					},'html');
+    				}
+    			});
+    		})
+    		
+    		 		function imgUpload(obj){
+    		 			 var filename = $('input[name=face]').val();
+    		 			var arr = filename.split('.');
+    		 			var arr1 = arr[1].toLowerCase();
+    		 			 var objUrl = getObjectURL(obj.files[0]) ;  
+    		 			var imgSize = obj.files[0].size;
+    		 			if(arr1!="png"&&arr1!="gif"&&arr1!="jpg"&&arr1!="jpeg"){
+    		 				$("#errMsg").html('选择图片格式错误');
+    		 				return;
+    		 			}else{
+    		 				$("#errMsg").html(' ');
+    		 				$("#upload").attr({'width':'180px','height':"180px",'src':objUrl});
+    		 			}
+
+		 				if(imgSize>=2*1024*1024){
+		 					$("#errMsg").html('图片大小不能超过2m');
+		 					return;
+		 				} 
+		 				$("#imgForm").submit();
+    		 		}
+    		 		//建立一個可存取到該file的url  
+        			function getObjectURL(file) {  
+        			  var url = null ;   
+        			  // 下面函数执行的效果是一样的，只是需要针对不同的浏览器执行不同的 js 函数而已  
+        			  if (window.createObjectURL!=undefined) { // basic  
+        			    url = window.createObjectURL(file) ;  
+        			  } else if (window.URL!=undefined) { // mozilla(firefox)  
+        			    url = window.URL.createObjectURL(file) ;  
+        			  } else if (window.webkitURL!=undefined) { // webkit or chrome  
+        			    url = window.webkitURL.createObjectURL(file) ;  
+        			  }  
+        			  return url ;  
+        			}  
+    		</script>
+    		<div class='form hidden'>
+    			<form action="<?php echo site_url('UserSeting/edit_pwd');?>" method='post' name='editPwd' id="defaultForm1">
+    				<p class='account'>登录邮箱：<span>admin@admin.com</span></p>
+    				<p class="form-group input-group-sm">
+    					<label for=""><span class='red'>*</span>旧密码：</label>
+    					<input class='input form-control' style="display:inline;width:200px" type="password" name='old' class='input'/>
+    				</p>
+    				<p class="form-group input-group-sm">
+    					<label for=""><span class='red'>*</span>新密码：</label>
+    					<input class='input form-control' style="display:inline;width:200px"  type="password" name='newp' class='input' id='new'/>
+    				</p>
+    				<p class="form-group input-group-sm">
+    					<label for=""><span class='red'>*</span>确认密码：</label>
+    					<input class='input form-control' style="display:inline;width:200px" type="password" name='newed' class='input'/>
+    				</p>
+    				<p>
+    					<input type="submit" value='确认修改' class='edit-sub'/>
+    				</p>
+    			</form>
+    		</div>
+    	</div>
+    </div>
+    <!--修改密码  -->
+    		<script>
+    		$(function(){
+    			$('#defaultForm1').bootstrapValidator({
+    	            message: 'This value is not valid',
+    	           
+    	            feedbackIcons: {
+    	                valid: 'glyphicon glyphicon-ok',
+    	                invalid: 'glyphicon glyphicon-remove',
+    	                validating: 'glyphicon glyphicon-refresh'
+    	            },
+    	            fields: {
+    	            	old: {
+    	                    message: 'The username is not valid',
+    	                    validators: {
+    	                        notEmpty: {
+    	                            message: '请填写旧密码'
+    	                        },
+    	                         remote: {
+    	                            type: 'POST',
+    	                            url: '<?php echo site_url("UserSeting/oldpwd"); ?>',
+    	                            message: '密码错误',
+    	                            delay: 1000
+    	                        } 
+    	                      
+    	                    }
+    	                
+    	                },
+    	                newp: {
+    	                    message: 'The username is not valid',
+    	                    validators: {
+    	                        notEmpty: {
+    	                            message: '不能为空'
+    	                        },
+    	                  
+    	                        stringLength: {
+    	                            min: 6,
+    	                            max: 30,
+    	                            message: '6-30个字符'
+    	                        },
+    	                        
+    	                        regexp: {
+    	                            regexp: /^[a-zA-Z0-9_\.]+$/,
+    	                            message: '由字母、数字及下划线组成'
+    	                        }
+    	                      
+    	                    }
+    	                
+    	                },
+    	                newed: {
+    	                    message: 'The username is not valid',
+    	                    validators: {
+    	                        notEmpty: {
+    	                            message: '不能为空'
+    	                        },
+    	                        identical: {
+    	                        	field: 'newp',
+    	                        	message: '两次密码不一致'
+    	                        } 
+    	                      
+    	                    }
+    	                
+    	                }
+    	           }
+    	            
+    	        }).on('success.form.bv', function(e) {
+    	            e.preventDefault();
+
+    	            // Get the form instance
+    	            var $form = $(e.target);
+
+    	            // Get the BootstrapValidator instance
+    	            var bv = $form.data('bootstrapValidator');
+
+    	            // Use Ajax to submit form data
+    	            $.post($form.attr('action'), $form.serialize(), function(result) {
+    	                	alert('修改成功');
+    	                	window.location.href = "";
+    	             
+    	            }, 'json');
+    	        });
+    			
+    			
+    		})
+    		
+    		</script>
+<!--==========内容主体结束==========-->
+<!--==========底部==========-->
+    
+
+<!--[if IE 6]>
+    <script type="text/javascript" src="__PUBLIC__/Js/DD_belatedPNG_0.0.8a-min.js"></script>
+    <script type="text/javascript">
+        DD_belatedPNG.fix('#top','background');
+        DD_belatedPNG.fix('.logo','background');
+        DD_belatedPNG.fix('#sech_text','background');
+        DD_belatedPNG.fix('#sech_sub','background');
+        DD_belatedPNG.fix('.send_title','background');
+        DD_belatedPNG.fix('.icon','background');
+        DD_belatedPNG.fix('.ta_right','background');
+    </script>
+<![endif]-->
+</body>
+</html>

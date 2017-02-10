@@ -1,0 +1,264 @@
+
+	<title><?php if($atme) echo '@我'; else echo "我的收藏";?></title>
+
+	<link rel="stylesheet" href="/Blog/Public/Css/nav.css" />
+	<link rel="stylesheet" href="/Blog/Public/Css/weibo_list.css" />
+	<link rel="stylesheet" href="/Blog/Public/Css/bottom.css" />
+	
+	<script type="text/javascript" src='/Blog/Public/Js/jquery-1.7.2.min.js'></script>
+    <script type="text/javascript" src='/Blog/Public/Js/nav.js'></script>
+    <script type='text/javascript' src='/Blog/Public/Js/weibo-list.js'></script>
+    <script type='text/javascript'>
+        var commentUrl = "<?php echo site_url('User/comment') ?>";
+        var getComment = "<?php echo site_url('User/getComment') ?>";
+        var keepUrl = "<?php echo site_url('User/keep') ?>";
+        var cancelKeep = "<?php echo site_url('Operate/cancelkeep') ?>";
+    </script>
+
+<?php $this->load->view('index/nav.html');?>
+<!--==========顶部固定导行条==========-->
+<!--==========内容主体==========-->
+	<div style='height:60px;opcity:10'></div>
+    <div class="main">
+    <!--=====左侧=====-->
+       <?php $this->load->view('index/left.html');?>
+    <!--=====右侧=====-->
+    	<div id='right'>
+    		<div id='content'>
+	    		<div class='view_line'>
+	                <strong><?php if($atme) echo '@我'; else echo "收藏";?></strong>
+	            </div>
+<?php if(!$weibo):?>
+    没有 <?php if($atme) echo '@我'; else echo "收藏";?>的微博
+<?php else:?>
+
+<?php foreach($weibo as $key=>$v): ?>
+ 
+    <?php if(!$v['isturn']):?>
+<!--====================普通微博样式====================-->
+            <div class="weibo">
+                <!--头像-->
+                <div class="face">
+                    <a href="">
+                        <img src="<?php if($v['face50']) echo $v['face50'] ; else echo '/Blog/Public/Images/noface.gif';?>" width='50' height='50'/>
+                    </a>
+                </div>
+                <div class="wb_cons">
+                    <dl>
+                    <!--用户名-->
+                        <dt class='author'>
+                            <a href=""><?php echo $v['nickname']?></a>
+                        </dt>
+                    <!--发布内容-->
+                        <dd class='content'>
+                            <p><?php echo replace_weibo($v['content'])?></p>
+                        </dd>
+                    <!--微博图片-->
+                  
+                    <?php if($v['max']):?>
+                        <dd>
+                            <div class='wb_img'>
+                            <!--小图-->
+                                <img src="<?php echo $v['mini'] ?>" class='mini_img'/>
+                                <div class="img_tool hidden">
+                                    <ul>
+                                        <li>
+                                            <i class='icon icon-packup'></i>
+                                            <span class='packup'>&nbsp;收起</span>
+                                        </li>
+                                        <li>|</li>
+                                        <li>
+                                            <i class='icon icon-bigpic'></i>
+                                            <a href="<?php echo $v['max'] ?>" target='_blank'>&nbsp;查看大图</a>
+                                        </li>
+                                    </ul>
+                                <!--中图-->
+                                    <div class="img_info"><img src="<?php echo $v['medium'] ?>"/></div>
+                                </div>
+                            </div>
+                        </dd>
+                   <?php endif;?>
+                    </dl>
+                <!--操作-->
+                    <div class="wb_tool">
+                    <!--发布时间-->
+                        <span class="send_time"><?php echo time_format($v['time']); ?></span>
+                        <ul>
+                       
+                        <?php if(isset($v["kid"])):?>
+                            <li><span>收藏于：<?php echo time_format($v['ktime']); ?></span></li>
+                            <li>|</li>
+                         <?php endif;?>
+                            <li><span class='turn' id="<?php echo $v['id'];?>">转发<?php if($v["turn"]) echo "(".$v["turn"].")";?></span></li>
+                            <li>|</li>
+                            <li class='keep-wrap'>
+                            	
+                            	<?php if(isset($v["kid"])):?>
+									<span class='cancel-keep' kid="<?php echo $v['kid'];?>" wid="<?php echo $v['id']?>">取消收藏</span>
+                        		
+                        		<?php else: ?>
+                                	<span class='keep' wid="<?php echo $v['id']?>">收藏<?php if($v["keep"]) echo "(".$v["keep"].")";?></span>
+                                	<div class='keep-up hidden'></div>
+                                <?php endif;?>
+                             
+                            </li>
+                            <li>|</li>
+                           <li><span class='comment' wid="<?php echo $v['id']?>">评论<?php if($v["comment"]) echo "(".$v["comment"].")";?></span></li>
+                        </ul>
+                    </div>
+                <!--=====回复框=====-->
+                    <div class='comment_load hidden'>
+                        <img src="/Blog/Public/Images/loading.gif">评论加载中，请稍候...
+                    </div>
+                    <div class='comment_list hidden'>
+                        <textarea name="" sign="<?php echo 'comment'.$key ?>"></textarea>
+                        <ul>
+                            <li class='phiz fleft' sign="<?php echo 'comment'.$key ?>"></li>
+                            <li class='comment_turn fleft'>
+                                <label>
+                                    <input type="checkbox" name=''/>同时转发到我的微博
+                                </label>
+                            </li>
+                            <li class='comment_btn fright' wid="<?php echo $v['id']?>" uid="<?php echo $v['uid']?>">评论</li>
+                        </ul>
+                    </div>
+                <!--=====回复框结束=====-->
+                </div>
+            </div>
+    <?php else:?>
+<!--====================转发样式====================-->
+            <div class="weibo">
+            <!--头像-->
+                <div class="face">
+                    <a href="">
+                        <img src="<?php if($v['face50']) echo $v['face50'] ; else echo '/Blog/Public/Images/noface.gif';?>" width='50' height='50'/>
+                    </a>
+                </div>
+                <div class="wb_cons">
+                    <dl>
+                    <!--用户名-->
+                        <dt class='author'>
+                            <a href=""><?php echo $v['nickname']?></a>
+                        </dt>
+                    <!--发布内容-->
+                        <dd class='content'>
+                             <?php echo str_replace('//','<span style="color:#ccc;font-weight:bold;">&nbsp;//&nbsp;</span>',replace_weibo($v['content']));?>
+                        </dd>
+                    <!--转发的微博内容-->
+                 
+                    <?php if($v['isturn'] == -1): ?>
+                        <dd class="wb_turn">该微博已被删除</dd>
+               
+                   <?php else:?>
+                        <dd>
+                            <div class="wb_turn">
+                                <dl>
+                                <!--原作者-->
+                                    <dt class='turn_name'>
+                                        <a href="">@<?php echo $v['isturn']['nickname']?></a>
+                                    </dt>
+                                <!--原微博内容-->
+                                    <dd class='turn_cons'>
+                                        <p><?php echo replace_weibo($v['isturn']['content']);?></p>
+                                    </dd>
+                                <!--原微博图片-->
+                              
+                                <?php if($v['isturn']['max']):?>
+                                    <dd>
+                                        <div class="turn_img">
+                                        <!--小图-->
+                                            <img src="<?php echo $v['isturn']['mini'] ?>" class='turn_mini_img'/>
+                                            <div class="turn_img_tool hidden">
+                                                <ul>
+                                                    <li>
+                                                        <i class='icon icon-packup'></i>
+                                                        <span class='packup'>&nbsp;收起</span></li>
+                                                    <li>|</li>
+                                                    <li>
+                                                        <i class='icon icon-bigpic'></i>
+                                                        <a href="<?php echo $v['isturn']['max'] ?>" target='_blank'>&nbsp;查看大图</a>
+                                                    </li>
+                                                </ul>
+                                            <!--中图-->
+                                                <div class="turn_img_info">
+                                                    <img src="<?php echo $v['isturn']['medium'] ?>"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </dd>
+                               <?php endif;?>
+                                </dl>
+                                <!--转发微博操作-->
+                                <div class="turn_tool">
+                                    <span class='send_time'>
+                                        <?php echo time_format($v['isturn']['time']);?>
+                                    </span>
+                                    <ul>
+                                        <li><a href="">转发<?php if($v['isturn']['turn']) echo '('.$v['isturn']['turn'].')'; ?></a></li>
+                                        <li>|</li>
+                                        <li><a href="">评论<?php if($v['isturn']['turn']) echo '('.$v['isturn']['comment'].')'; ?></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </dd>
+                    <?php endif;?>
+                    </dl>
+                    <!--操作-->
+                    <div class="wb_tool">
+                        <!--发布时间-->
+                        <span class="send_time">
+                            <?php echo time_format($v['time']);?>
+                        </span>
+                        <ul>
+                      
+                        <?php if(isset($v["kid"])):?>
+                            <li><span>收藏于：<?php echo time_format($v['ktime']);?></span></li>
+                            <li>|</li>
+                        <?php endif;?>
+                        
+                            <li><span class='turn' id="<?php echo $v['id']?>" tid="<?php echo $v['isturn']['id']?>">转发<?php if($v["turn"]) echo '('.$v["turn"].')';?></span></li>
+                            <li>|</li>
+                            <li class='keep-wrap'>
+                            	<?php if(isset($v["kid"])):?>
+									<span class='cancel-keep' kid="<?php echo $v['kid']?>" wid="<?php echo $v['id']?>">取消收藏</span>
+                        		
+                        		<?php else:?>
+                                	<span class='keep' wid="<?php echo $v['id']?>">收藏<?php if($v["keep"]) echo '('.$v["keep"].')';?></span>
+                                	<div class='keep-up hidden'></div>
+                                </if>
+                                <?php endif;?>
+                            </li>
+                            <li>|</li>
+                            <li><span class='comment' wid="<?php echo $v['id']?>">评论<?php if($v["comment"]) echo '('.$v["comment"].')';?></span></li>
+                        </ul>
+                    </div>
+                    <!--回复框-->
+                    <div class='comment_load hidden'>
+                        <img src="/Blog/Public/Images/loading.gif">评论加载中，请稍候...
+                    </div>
+                    <div class='comment_list hidden'>
+                        <textarea name="" sign="<?php echo 'comment'.$key ?>"></textarea>
+                        <ul>
+                            <li class='phiz fleft' sign="<?php echo 'comment'.$key ?>"></li>
+                            <li class='comment_turn fleft'>
+                                <label>
+                                    <input type="checkbox" name=''/>同时转发到我的微博
+                                </label>
+                            </li>
+                            <li class='comment_btn fright' wid="<?php echo $v['id'] ?>" uid="<?php echo $v['uid'] ?>">评论</li>
+                        </ul>
+                    </div>
+                    <!--回复框结束-->
+                </div>
+            </div>
+  <?php endif;?>
+<?php endforeach;?>
+<?php endif;?>
+            <div id='page'><?php echo $this->pagination->create_links();?></div>
+        	</div>
+<!--====================转发样式结束====================-->
+
+    	</div>
+    </div>
+<!--==========内容主体结束==========-->
+<!--==========底部==========-->

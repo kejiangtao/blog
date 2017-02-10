@@ -1,0 +1,57 @@
+
+	<title>我的评论</title>
+	    <link rel="stylesheet" href="/Blog/Public/Css/index.css" />
+	<link rel="stylesheet" href="/Blog/Public/Css/nav.css" />
+	<link rel="stylesheet" href="/Blog/Public/Css/comment.css" />
+	<link rel="stylesheet" href="/Blog/Public/Css/bottom.css" />
+	<script type="text/javascript" src='/Blog/Public/Js/jquery-1.7.2.min.js'></script>
+    <script type="text/javascript" src='/Blog/Public/Js/nav.js'></script>
+    <script type='text/javascript' src='/Blog/Public/Js/comment.js'></script>
+    <script type="text/javascript">
+        var replyUrl = "<?php echo site_url('Operate/reply') ?>";
+        var delComment = "<?php echo site_url('Operate/delComment') ?>";
+    </script>
+<body>
+<!--==========顶部固定导行条==========-->
+<!--==========内容主体==========-->
+<div style='height:60px;opcity:10'></div>
+    <div class="main">
+    <!--=====左侧=====-->
+        <?php $this->load->view('index/left.html');?>
+    <!--=====中部=====-->
+        <div id="middle" class='fleft'>
+			<p class='title'>收到的评论(共<?php  echo $count; ?>)条</p>
+		<?php if($comment):?>	
+        <?php foreach($comment as $key=> $v):?>
+			<dl>
+				<dt>
+					<a href=""><img src="<?php echo $v['face50'] ?>" width='50' height='50'/></a>
+				</dt>
+				<dd>
+					<a href=""><?php echo $v['nickname'] ?></a>：
+					<span><?php echo replace_weibo($v['content']).'（'.time_format($v['time']).'）'?></span>
+				</dd>
+				<dd class='tright'>
+					<span class='del-comment' cid="<?php echo $v['id'] ?>" wid="<?php echo $v['wid'] ?>">删除</span> &nbsp;|&nbsp;
+					<span class='c-reply'>回复</span>
+				</dd>
+				<!--回复框-->
+                <dd class='comment_list hidden'>
+                    <textarea name="" sign="<?php echo 'comment'.$key ?>"></textarea>
+                    <ul>
+                        <li class='phiz fleft' sign="<?php echo 'comment'.$key ?>"></li>
+                        <li class='comment_btn fright' wid="<?php echo $v['wid'] ?>">回复</li>
+                    </ul>
+                </dd>
+                <!--回复框结束-->
+			</dl>
+         <?php endforeach;?>
+        <div id='page'><?php echo $this->pagination->create_links();?></div>
+        <?php endif;?>
+        </div>
+<!--==========右侧==========-->
+<?php $this->load->view('index/right.html')?>
+    </div>
+    </div>
+<!--==========内容主体结束==========-->
+<!--==========底部==========-->

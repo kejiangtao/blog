@@ -1,0 +1,422 @@
+
+    <title>个人微博-首页</title>
+    <link rel="stylesheet" href="/Blog/Public/Css/nav.css" />
+    <link rel="stylesheet" href="/Blog/Public/Css/index.css" />
+    <link rel="stylesheet" href="/Blog/Public/Css/bottom.css" /> 
+    <script src='/Blog/Public/Js/jquery.min.js'></script>
+     <script src='/Blog/Public/Js/jquery-1.7.2.min.js'></script>
+	<script src="/Blog/Public/Js/nav.js"></script>  
+	<script src="/Blog/Public/Js/index.js"></script> 
+	<script type='text/javascript'>
+        var commentUrl = "<?php echo site_url('User/comment') ?>";
+        var getComment = "<?php echo site_url('User/getComment') ?>";
+        var keepUrl = "<?php echo site_url('User/keep') ?>";
+        var delWeibo = '';
+    </script>
+	<style>
+		#page a,strong {
+			    font-size: 20px;
+		}
+	
+	</style>
+<div style='height:60px;opcity:10'></div>
+    <div class="main">
+   <?php $this->load->view('index/left.html');?>
+    <!--=====中部=====-->
+        <div id="middle" class='fleft'>
+        <!--微博发布框-->
+            <div class='send_wrap'>
+                <div class='send_title fleft'></div>
+                <div class='send_prompt fright'>
+                    <span>你还可以输入<span id='send_num'>140</span>个字</span>
+                </div>
+                <div class='send_write'>
+                    <form action="<?php echo site_url('User/sendWeibo') ?>" method='post' name='weibo' >
+                        <textarea sign='weibo' name='content'></textarea>
+                       	 <input type="hidden" name='max' value=''/>
+                           <input type="hidden" name='medium' value=''/>
+                            <input type="hidden" name='mini' value=''/>
+                        <span class='ta_right'></span>
+                         <div class='send_tool'>
+                          <input type='submit' value='' class='send_btn fright' title='发布微博按钮'/>
+                         </div>
+                        </form>
+                         <form action="<?php echo site_url('User/uploadPic') ?>" method='post' id="weibo" target="ifremapic" enctype="multipart/form-data">
+                        <div class='send_tool'>
+                            <ul class='fleft'>
+                                <li title='表情'><i class='icon icon-phiz phiz' sign='weibo'></i></li>
+                                <li title='图片'><i class='icon icon-picture'></i>
+                               
+                                <!--图片上传框-->
+                                    <div id="upload_img" style="display:none">
+                                        <div class='upload-title'><p>本地上传</p><span class='close'></span></div>
+                                        <div class='upload-btn'>   
+                                            <input type="file" name='picture' id='picture' multiple="multiple" onchange="imgUpload(this);"/>
+                                        </div>
+                                         
+                                    </div>
+                                <!--图片上传框-->
+                                  
+                                </li>
+                                <li>                               	
+                                      <img src="" alt="" id='picshow' style=" margin-top: -38%;"/>                    
+                                </li>
+                            </ul>
+                           
+                        </div>
+                    </form>
+                    <iframe style="display:none" name="ifremapic"></iframe>
+                </div>
+            </div>
+            <script type="text/javascript">
+    
+    		
+    		 		function imgUpload(obj){
+    		 			 var filename = $('input[name=picture]').val();
+    		 			var arr = filename.split('.');
+    		 			var arr1 = arr[1].toLowerCase();
+    		 			 var objUrl = getObjectURL(obj.files[0]) ;  
+    		 			var imgSize = obj.files[0].size;
+    		 			if(arr1!="png"&&arr1!="gif"&&arr1!="jpg"&&arr1!="jpeg"){
+    		 				alert('选择图片格式错误');
+    		 				return;
+    		 			}else{
+    		 				
+    		 				$("#picshow").attr({'width':'80px','height':"80px",'src':objUrl});
+    		 				$("#upload_img").fadeOut();
+    		 			}
+
+		 				if(imgSize>=2*1024*1024){
+		 					alert('图片不得超过2m');
+		 					return;
+		 				} 
+		 				$("#weibo").submit();
+    		 		}
+    		 		//建立一個可存取到該file的url  
+        			function getObjectURL(file) {  
+        			  var url = null ;   
+        			  // 下面函数执行的效果是一样的，只是需要针对不同的浏览器执行不同的 js 函数而已  
+        			  if (window.createObjectURL!=undefined) { // basic  
+        			    url = window.createObjectURL(file) ;  
+        			  } else if (window.URL!=undefined) { // mozilla(firefox)  
+        			    url = window.URL.createObjectURL(file) ;  
+        			  } else if (window.webkitURL!=undefined) { // webkit or chrome  
+        			    url = window.webkitURL.createObjectURL(file) ;  
+        			  }  
+        			  return url ;  
+        			}  
+    		</script>
+        <!--微博发布框-->
+            <div class='view_line'>
+                <strong>微博</strong>
+            </div>
+<?php if(!$weibo): ?>
+    没有发布的微博
+<?php else: ?>
+<?php foreach($weibo as $key=>$v):?>
+
+    <?php if(!$v["isturn"]): ?>
+<!--====================普通微博样式====================-->
+            <div class="weibo">
+                <!--头像-->
+                <div class="face">
+                    <a href="  ">
+                        <img src="<?php if($v['face50']) echo $v['face50'];else echo '/Blog/Public/Images/noface.gif'; ?>
+                         " width='50' height='50'/>
+                    </a>
+                </div>
+                <div class="wb_cons">
+                    <dl>
+                    <!--用户名-->
+                        <dt class='author'>
+                            <a href="  "><?php echo $v['nickname']?></a>
+                        </dt>
+                    <!--发布内容-->
+                        <dd class='content'>
+                            <p><?php echo  replace_weibo($v['content']) ;?></p>
+                        </dd>
+                    <!--微博图片-->
+                   
+                    <?php if($v['max']):?>
+                        <dd>
+                            <div class='wb_img'>
+                            <!--小图-->
+                                <img src="<?php echo $v['mini']?>" class='mini_img'/>
+                                <div class="img_tool hidden">
+                                    <ul>
+                                        <li>
+                                            <i class='icon icon-packup'></i>
+                                            <span class='packup'>&nbsp;收起</span>
+                                        </li>
+                                        <li>|</li>
+                                        <li>
+                                            <i class='icon icon-bigpic'></i>
+                                            <a href="<?php echo $v['max']?>" target='_blank'>&nbsp;查看大图</a>
+                                        </li>
+                                    </ul>
+                                <!--中图-->
+                                    <div class="img_info"><img src="<?php echo $v['medium']?>"/></div>
+                                </div>
+                            </div>
+                        </dd>
+                  <?php endif;?>
+                    </dl>
+                <!--操作-->
+                    <div class="wb_tool">
+                    <!--发布时间-->
+                        <span class="send_time"><?php echo time_format($v['time']);?></span>
+                        <ul>
+                            <li><span class='turn' id='<?php echo $v["id"];?>'>转发<?php if($v["turn"]) echo "(".$v["turn"].")";?></span></li>
+                            <li>|</li>
+                            <li>
+                           		 <span class='keep' wid='<?php echo $v["id"]?>'>收藏<?php if($v["keep"]) echo "(".$v["keep"].")";?></span>
+                            	<div class='keep-up hidden'></div>
+                            </li>
+                           
+                            <li>|</li>
+                            <li><span class='comment' wid='<?php echo $v["id"]?>'>评论<?php if($v["comment"]) echo "(".$v["comment"].")";?></span></li>
+                        </ul>
+                    </div>
+                <!--=====回复框=====-->
+                    <div class='comment_load hidden'>
+                        <img src="/Blog/Public/Images/loading.gif">评论加载中，请稍候...
+                    </div>
+                    <div class='comment_list hidden'>
+                        <textarea name="" sign='comment<?php echo $key?>'></textarea>
+                        <ul>
+                            <li class='icon icon-phiz phiz' sign='comment<?php echo $key?>'></li>
+                            <li class='comment_turn fleft'>
+                                <label>
+                                    <input type="checkbox" name=''/>同时转发到我的微博
+                                </label>
+                            </li>
+                            <li class='comment_btn fright' wid='<?php echo $v["id"] ?>' uid='<?php echo $v["uid"] ?>'>评论</li>
+                        </ul>
+                    </div>
+                <!--=====回复框结束=====-->
+                </div>
+            </div>
+   <?php else: ?>
+<!--====================转发样式====================-->
+            <div class="weibo">
+            <!--头像-->
+                <div class="face">
+                    <a href="  ">
+                        <img src="<?php echo $v['face50'] ?>"/>
+                    </a>
+                </div>
+                <div class="wb_cons">
+                    <dl>
+                    <!--用户名-->
+                        <dt class='author'>
+                            <a href="  "><?php echo $v['nickname']?></a>
+                        </dt>
+                    <!--发布内容-->
+                        <dd class='content'>
+                            <p>
+                            <?php echo str_replace('//','<span style="color:#ccc;font-weight:bold;">&nbsp;//&nbsp;</span>',replace_weibo($v['content']));?>
+                            
+                            </p>
+                        </dd>
+                    <!--转发的微博内容-->
+                        <dd>
+                            <div class="wb_turn">
+                                <dl>
+                                <!--原作者-->
+                                    <dt class='turn_name'>
+                                        <a href="">@<?php echo $v['isturn']['nickname'];?></a>
+                                    </dt>
+                                <!--原微博内容-->
+                                    <dd class='turn_cons'>
+                                        <p><?php echo replace_weibo($v['isturn']['content']);?></p>
+                                    </dd>
+                                <!--原微博图片-->
+                              
+                                <?php if($v["isturn"]["max"]): ?>
+                                    <dd>
+                                        <div class="turn_img">
+                                        <!--小图-->
+                                            <img src="<?php echo $v['isturn']['mini']?>" class='turn_mini_img'/>
+                                            <div class="turn_img_tool hidden">
+                                                <ul>
+                                                    <li>
+                                                        <i class='icon icon-packup'></i>
+                                                        <span class='packup'>&nbsp;收起</span></li>
+                                                    <li>|</li>
+                                                    <li>
+                                                        <i class='icon icon-bigpic'></i>
+                                                        <a href="<?php echo $v['isturn']['max']?>" target='_blank'>&nbsp;查看大图</a>
+                                                    </li>
+                                                </ul>
+                                            <!--中图-->
+                                                <div class="turn_img_info">
+                                                    <img src="<?php echo $v['isturn']['medium']?>"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </dd>
+                                <?php endif;?>
+                                </dl>
+                                <!--转发微博操作-->
+                                <div class="turn_tool">
+                                    <span class='send_time'>
+                                        <?php echo time_format($v['isturn']['time'])?>
+                                    </span>
+                                    <ul>
+                                        <li><a href="">转发<?php if($v["isturn"]["turn"]) echo "(".$v["isturn"]["turn"].")";?></a></li>
+                                        <li>|</li>
+                                        <li><a href="">评论<?php if($v["isturn"]["comment"]) echo "(".$v["isturn"]["comment"].")";?></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </dd>
+                    </dl>
+                    <!--操作-->
+                    <div class="wb_tool">
+                        <!--发布时间-->
+                        <span class="send_time">
+                             <?php echo time_format($v['time'])?>
+                        </span>
+                        <ul>
+                            <li><span class='turn' id="<?php echo $v['id'] ?>" tid="<?php echo $v['isturn']['id'] ?>">转发<?php if($v["turn"]) echo "(".$v["turn"].")";?></span></li>
+                            <li>|</li>
+                            <li>
+                            	<span class='keep' wid='<?php echo $v["id"]?>'>收藏<?php if($v["keep"]) echo "(".$v["keep"].")";?></span>
+                            	<div class='keep-up hidden'></div>
+                            </li>
+                            <li>|</li>
+                            <li><span class='comment' wid="<?php echo $v['id']?>">评论<?php if($v["comment"]) echo "(".$v["comment"].")";?></span></li>
+                        </ul>
+                    </div>
+                    <!--回复框-->
+                    <div class='comment_load hidden'>
+                        <img src="/Blog/Public/Images/loading.gif">评论加载中，请稍候...
+                    </div>
+                    <div class='comment_list hidden'>
+                        <textarea name="" sign="<?php echo 'comment'.$key?>"></textarea>
+                        <ul>
+                            <li class='phiz fleft' sign="<?php echo 'comment'.$key?>"></li>
+                            <li class='comment_turn fleft'>
+                                <label>
+                                    <input type="checkbox" name=''/>同时转发到我的微博
+                                </label>
+                            </li>
+                            <li class='comment_btn fright' wid="<?php echo $v['id']?>" uid="<?php echo $v['uid']?>">评论</li>
+                        </ul>
+                    </div>
+                    <!--回复框结束-->
+                </div>
+            </div>
+<!--====================转发样式结束====================-->
+    <?php endif; ?>
+<?php endforeach; ?>
+<?php endif; ?>
+            <div id='page'><?php echo $this->pagination->create_links();?></div>
+        </div>
+        <script>
+        /**
+    	 * 评论异步分类处理
+    	 */
+    	function pageshow(obj){
+    		var commentList = $(obj).parents('.comment_list');
+    		var commentLoad = commentList.prev();
+    		var wid = $(obj).attr('wid');
+    		var page = $(obj).attr('page');
+    		//异步提取评论内容
+    		$.ajax({
+    			url : getComment,
+    			data : {wid : wid, page : page},
+    			dataType : 'html',
+    			type : 'post',
+    			beforeSend : function () {
+    				commentList.hide().find('dl').remove();
+    				commentLoad.show();
+    			},
+    			success : function (data) {
+    				if (data != 'false') {
+    					commentList.append(data);
+    				}
+    			},
+    			complete : function () {
+    				commentLoad.hide();
+    				commentList.show().find('textarea').val('').focus();
+    			}
+    		});
+    	}
+        
+        </script>
+<!--==========右侧==========-->
+        <div id="right">
+            <div class="edit_tpl"><a href="" id='set_model'></a></div>
+            <dl class="user_face">
+                <dt>
+                    <a href=""><img src="<?php echo $user[0]['face180']?>" width='80' height='80' alt="" /></a>
+                </dt>
+                <dd><a href=""><?php echo $user[0]['nickname'] ?></a></dd>
+            </dl>
+            <ul class='num_list'>
+                <li><a href=""><strong><?php echo $user[0]['follow'] ?></strong><span>关注</span></a></li>
+                <li><a href=""><strong><?php echo $user[0]['fans'] ?></strong><span>粉丝</span></a></li>
+                <li class='noborder'><a href=""><strong><?php echo $user[0]['weibo'] ?></strong><span>微博</span></a></li>
+            </ul>
+            <div class="maybe">
+                <fieldset>
+                    <legend>可能感兴趣的人</legend>
+                    <ul>
+                        <li>
+                            <dl>
+                                <dt>
+                                    <a href=""><img src="/Blog/Public/Images/noface.gif" alt="" width='30' height='30'/></a>
+                                </dt>
+                                <dd><a href="">后盾官网</a></dd>
+                                <dd>共10个共同好友</dd>
+                            </dl>
+                            <span class='heed_btn'><strong>+&nbsp;</strong>关注</span>
+                        </li>
+                        <li>
+                            <dl>
+                                <dt>
+                                    <a href=""><img src="/Blog/Public//Images/noface.gif" alt="" width='30' height='30'/></a>
+                                </dt>
+                                <dd><a href="">后盾官网</a></dd>
+                                <dd>共10个共同好友</dd>
+                            </dl>
+                            <span class='heed_btn'><strong>+&nbsp;</strong>关注</span>
+                        </li>
+                        <li>
+                            <dl>
+                                <dt>
+                                    <a href=""><img src="/Blog/Public//Images/noface.gif" alt="" width='30' height='30'/></a>
+                                </dt>
+                                <dd><a href="">后盾论坛</a></dd>
+                                <dd>共10个共同好友</dd>
+                            </dl>
+                            <span class='heed_btn'><strong>+&nbsp;</strong>关注</span>
+                        </li>
+                        <li>
+                            <dl>
+                                <dt>
+                                    <a href=""><img src="/Blog/Public//Images/noface.gif" alt="" width='30' height='30'/></a>
+                                </dt>
+                                <dd><a href="">后盾论坛</a></dd>
+                                <dd>共10个共同好友</dd>
+                            </dl>
+                            <span class='heed_btn'><strong>+&nbsp;</strong>关注</span>
+                        </li>
+                    </ul>
+                </fieldset>
+            </div>
+            <div class="post">
+                <div class='post_line'>
+                    <span>公告栏</span>
+                </div>
+                <ul>
+                    <li><a href="">后盾网DIV+CSS视频教程</a></li>
+                    <li><a href="">后盾网PHP视频教程</a></li>
+                    <li><a href="">后盾网MySQL视频教程</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+<!--==========内容主体结束==========-->
+<!--==========底部==========-->

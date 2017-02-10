@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title>登录首页</title>
+	<link rel="stylesheet" href="/Blog/Public/bootstrap/css/bootstrap.css" />
+	<link rel="stylesheet" href="/Blog/Public/bootstrapvalidator/dist/css/bootstrapValidator.css" />
+	
+	  <link rel="stylesheet" href="/Blog/Public/Css/regis.css" />
+	<script src='/Blog/Public/Js/jquery.min.js'></script>
+	<script src="/Blog/Public/bootstrap/js/bootstrap.js"></script>
+	<script src="/Blog/Public/bootstrapvalidator/dist/js/bootstrapValidator.js"></script>
+	<link rel="stylesheet" href="/Blog/Public/Css/login.css" />	
+	<style type="text/css">
+
+.glyphicon-ok:before {
+    content: " ";
+}
+
+.glyphicon-remove:before {
+    content: "";
+}
+.help-block {
+    margin-bottom: 0;
+    margin-left: 23%;
+}
+
+
+</style>
+</head>
+<body >
+	<div id='top-bg'></div>
+	<div id='login-form'>
+		<div id='login-wrap'>
+			<p>还没有微博帐号？<a href="<?php echo site_url('Blog/register'); ?>">立即注册</a></p>
+			<form action="<?php echo site_url('Blog/Login_ajax'); ?>"  method='post' id="defaultForm">
+				<fieldset>
+					<legend>用户登录</legend>
+					<p class="form-group input-group-sm">
+						<label for="account">登录账号：</label>
+						<input class='input form-control' style="display:inline"type="text" name='account' class='input'/>
+					</p>
+					<p class="form-group input-group-sm">
+						<label for="pwd">密码：</label>
+						<input class='input form-control' style="display:inline"type="password" name='password' class='input'/>
+					</p>
+					<p class="form-group input-group-sm">
+						<input type="checkbox" name='auto' checked='1' class='auto' id='auto'/>
+						<label for="auto">下次自动登录</label>
+					</p>
+					<p class="form-group input-group-sm">
+						<input type="submit" value='马上登录' id='login'/>
+					</p>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function(){
+			$('#defaultForm').bootstrapValidator({
+	            message: 'This value is not valid',
+	           
+	            feedbackIcons: {
+	                valid: 'glyphicon glyphicon-ok',
+	                invalid: 'glyphicon glyphicon-remove',
+	                validating: 'glyphicon glyphicon-refresh'
+	            },
+	            fields: {
+	            	account: {
+	                    message: 'The username is not valid',
+	                    validators: {
+	                        notEmpty: {
+	                            message: '不能为空'
+	                        },
+	                        stringLength: {
+	                            min: 6,
+	                            max: 30,
+	                            message: '6-30个字符'
+	                        },
+	                      /*   remote: {
+	                            type: 'POST',
+	                            url: '<?php echo site_url("Blog/yanzheng"); ?>',
+	                            message: '用户名已存在',
+	                            delay: 1000
+	                        }, */
+	                        regexp: {
+	                            regexp: /^[a-zA-Z0-9_\.]+$/,
+	                            message: '由字母、数字及下划线组成'
+	                        }
+	                    }
+	                
+	                },
+	                password: {
+                    message: 'The username is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: '不能为空'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 30,
+                            message: '6-30个字符'
+                        },
+                       
+                        
+                    }
+                
+                }
+
+
+                
+	           }
+	            
+	        }).on('success.form.bv', function(e) {
+	            e.preventDefault();
+
+	            // Get the form instance
+	            var $form = $(e.target);
+
+	            // Get the BootstrapValidator instance
+	            var bv = $form.data('bootstrapValidator');
+
+	            // Use Ajax to submit form data
+	            $.post($form.attr('action'), $form.serialize(), function(result) {
+	                if(result.code==1){
+	                	window.location.href = result.url;
+	                }else{
+	                	alert(result.msg);
+	                	
+	                }
+	            }, 'json');
+	        });
+			
+			
+		})
+	
+	
+	</script>
+</body>
+</html>

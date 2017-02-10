@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title>个人微博-注册</title>
+	<link rel="stylesheet" href="/Blog/Public/bootstrap/css/bootstrap.css" />
+	<link rel="stylesheet" href="/Blog/Public/bootstrapvalidator/dist/css/bootstrapValidator.css" />
+	<link rel="stylesheet" href="/Blog/Public/Css/regis.css" />
+	<script src='/Blog/Public/Js/jquery.min.js'></script>
+	<script src="/Blog/Public/bootstrap/js/bootstrap.js"></script>
+	<script src="/Blog/Public/bootstrapvalidator/dist/js/bootstrapValidator.js"></script>
+
+<style type="text/css">
+.has-feedback label ~ .form-control-feedback {
+     top: 0; 
+}
+.form-control-feedback {
+    position: relative;
+    top: 0;
+    right: 0;
+    z-index: 0;
+    display: inline;
+    width: 0;
+    height: 0;
+    line-height: 0;
+}
+.help-block {
+   display: inline;
+    /* margin-top: 5px; */
+    margin-bottom: 10px;
+    color: #737373;
+}
+
+</style>
+</head>
+<body>
+	<div id='logo'></div>
+	<div id='reg-wrap'>
+		<form id="defaultForm"  action="<?php echo site_url('Blog/register_info'); ?>"  method='post' name='register'>
+			
+				<h3 align="center">用户注册</h3>
+				<p class="form-group input-group-sm" style="margin-left:18%">
+					<label  for="account" class="col-sm-2 control-label">登录账号：</label>
+					<input type="text" style="display:inline" name='account' id='account' class='input form-control'/>
+				</p>
+				<p class="form-group input-group-sm" style="margin-left:18%">
+					<label for="password" class="col-sm-2 control-label">登录密码：</label>
+					<input type="password" style="display:inline" name='password' id='password' class='input form-control'/>
+				</p >
+				<p class="form-group input-group-sm" style="margin-left:18%">
+					<label for="pwded" class="col-sm-2 control-label">确认密码：</label>
+					<input type="password" style="display:inline" name='pwded' class='input form-control'/>
+				</p>
+				<p class="form-group input-group-sm" style="margin-left:18%">
+					<label for="nickname" class="col-sm-2 control-label">昵称：</label>
+					<input type="text" style="display:inline" name='nickname' id='nickname' class='input form-control'/>
+				</p>
+				<p class="form-group input-group-sm" style="margin-left:18%">
+					<label for="verify" class="col-sm-2 control-label">验证码：</label>
+					<input type="text" style="display:inline" name='verify'   id='verify' class='input form-control'/>
+					<img src="<?php echo $code; ?>" width='80' height='25' id='verify-img'/>
+				</p>
+				<p class="run form-group">
+					<input type="submit" id="validateBtn"value='马上注册' id='regis'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="<?php echo site_url('Blog/index');?>">立即登录</a>
+				</p>
+	
+		</form>
+	</div>
+	<script>
+	$(function(){
+		$("#verify-img").click(function(){
+			$.post("<?php echo site_url('Blog/register'); ?>",function(data){
+				//alert(data);
+				$("#verify-img").attr('src',data);
+			},'html');
+		});
+		  $('#defaultForm').bootstrapValidator({
+	            message: 'This value is not valid',
+	           
+	            feedbackIcons: {
+	                valid: 'glyphicon glyphicon-ok',
+	                invalid: 'glyphicon glyphicon-remove',
+	                validating: 'glyphicon glyphicon-refresh'
+	            },
+	            fields: {
+	            	account: {
+	                    message: 'The username is not valid',
+	                    validators: {
+	                        notEmpty: {
+	                            message: '不能为空'
+	                        },
+	                        stringLength: {
+	                            min: 6,
+	                            max: 30,
+	                            message: '6-30个字符'
+	                        },
+	                        remote: {
+	                            type: 'POST',
+	                            url: '<?php echo site_url("Blog/yanzheng"); ?>',
+	                            message: '用户名已存在',
+	                            delay: 1000
+	                        },
+	                        regexp: {
+	                            regexp: /^[a-zA-Z0-9_\.]+$/,
+	                            message: '由字母、数字及下划线组成'
+	                        }
+	                    }
+	                
+	                },
+	            password: {
+                    message: 'The username is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: '不能为空'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 30,
+                            message: '6-30个字符'
+                        },
+                       
+                        
+                    }
+                
+                },
+                pwded: {
+                    message: 'The username is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: '请确认密码'
+                        },
+                        identical: {
+                        	field: 'password',
+                        	message: '两次密码不一致'
+                        } 
+                    }
+                
+                },
+                nickname: {
+                    message: 'The username is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: '不能为空'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 30,
+                            message: '6-30个字符'
+                        },
+                       remote: {
+                    	   type: 'POST',
+                            url: '<?php echo site_url("Blog/yanzheng"); ?>',
+                            message: '昵称已存在'
+                        },
+                        regexp: {
+                            regexp: /^[a-zA-Z0-9_\.]+$/,
+                            message: '由字母、数字及下划线组成'
+                        }
+                    }
+                
+                }, 
+                verify: {
+                    message: 'The username is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: '不能为空'
+	                    },
+		                remote: {
+		                	 type: 'POST',
+		                    url: '<?php echo site_url("Blog/yanzheng"); ?>',
+		                    message: '验证码错误'
+		                }  
+                        
+                    }
+                
+                }
+	           }
+	            
+	        }).on('success.form.bv', function(e) {
+	            e.preventDefault();
+
+	            // Get the form instance
+	            var $form = $(e.target);
+
+	            // Get the BootstrapValidator instance
+	            var bv = $form.data('bootstrapValidator');
+
+	            // Use Ajax to submit form data
+	            $.post($form.attr('action'), $form.serialize(), function(result) {
+	                if(result.message){
+	                	alert('注册成功');
+	                	window.location.href = result.url;
+	                }else{
+	                	alert('注册失败');
+	                	window.location.href = "";
+	                }
+	            }, 'json');
+	        });
+		 
+	})
+ 
+	</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+
+	<title>-我的私信</title>
+	<link rel="stylesheet" href="<?php echo base_url() ?>/Public/Css/nav.css" />
+	<link rel="stylesheet" href="<?php echo base_url() ?>/Public/Css/letter.css" />
+	<link rel="stylesheet" href="<?php echo base_url() ?>/Public/Css/bottom.css" />
+	<script type="text/javascript" src='<?php echo base_url() ?>/Public/Js/jquery-1.7.2.min.js'></script>
+    <script type="text/javascript" src='<?php echo base_url() ?>/Public/Js/nav.js'></script>
+    <script type='text/javascript' src='<?php echo base_url() ?>/Public/Js/letter.js'></script>
+    <script type="text/javascript">
+        var delLetter = "<?php echo site_url('Operate/delLetter') ?>";
+    </script>
+<?php $this->load->view('index/nav.html');?>
+<!--==========顶部固定导行条==========-->
+<!--==========内容主体==========-->
+<div style='height:60px;opcity:10'></div>
+    <div class="main">
+    <!--=====左侧=====-->
+        <?php $this->load->view('index/left.html');?>
+    <!--=====中部=====-->
+        <div id="middle" class='fleft'>
+			<p class='title'>我的私信（共<?php echo $count; ?>条）<span class='send'>发送私信</span></p>
+        <?php foreach($letter as $v): ?>
+			<dl>
+				<dt>
+					<a ><img src="<?php if($v['face50']) echo $v['face50'];else echo '/Blog/Public/Images/noface.gif' ;?>" width='50' height='50'/></a>
+				</dt>
+				<dd>
+					<a ><?php echo $v['nickname'];?></a>：
+					<span><?php echo $v['content'];?></span>
+				</dd>
+				<dd class='tright'>
+                    <span class="send_time"><?php echo time_format($v['time']); ?></span>
+					<span class='del-letter' lid="<?php echo $v['id']; ?>">删除</span> &nbsp;|&nbsp;
+					<span class='l-reply'>回复</span>
+				</dd>
+			</dl>
+        <?php endforeach; ?>
+         <div id='page'><?php echo $this->pagination->create_links();?></div>
+        </div>
+<!--==========右侧==========-->
+       <?php $this->load->view('index/right.html');?>
+    </div>
+<!--==========内容主体结束==========-->
+
+<!--私信弹出框-->
+<div id='letter'>
+    <form action="<?php echo site_url('Operate/letterSend') ?>" method='post' onsubmit="return check_form(this) ;">
+        <div class="letter_head">
+            <span class='letter_text fleft'>发送私信</span>
+        </div>
+        <div class='send-user'>
+            用户昵称：<input type="text" name='name'/>
+        </div>
+        <div class='send-cons'>
+            内容：<textarea name="content"></textarea>
+        </div>
+        <div class='lt-btn-wrap'>
+            <input type="submit" value='发送' class='send-lt-sub'/>
+            <span class='letter-cencle'>取消</span>
+        </div>
+    </form>
+</div>
+<script>
+
+ function check_form(obj){
+	 
+	 if(obj.name.value==""){
+		 alert('请输入昵称');
+			obj.name.focus();
+			return false;	 
+	 }
+	 if(obj.content.value==""){
+		 alert('请输入内容');
+			obj.content.focus();
+			return false;	
+	 }
+ }
+</script>
+<!--==========底部==========-->
